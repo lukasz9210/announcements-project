@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dtos/user-create.dto';
 import { User } from './entities/user.entity';
-import * as bcrypt from 'bcrypt';
+import { comparePasswords } from '../shared/utils';
 
 @Injectable()
 export class UsersService {
@@ -35,7 +35,7 @@ export class UsersService {
       throw new HttpException('User not found', HttpStatus.UNAUTHORIZED);
     }
 
-    const areEqual = await bcrypt.compare(user.password, password);
+    const areEqual = await comparePasswords(user.password, password);
     if (!areEqual) {
       throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
     }
